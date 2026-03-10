@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - TechStore</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-store me-2"></i>TechStore
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/products">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-badge">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Our Products</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active">Products</li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="products-section">
+        <div class="container">
+            <!-- Filters -->
+            <div class="filters-bar">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h5>All Products ({{ products|length }})</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="sort-options text-md-end">
+                            <select class="form-select">
+                                <option>Sort by: Featured</option>
+                                <option>Price: Low to High</option>
+                                <option>Price: High to Low</option>
+                                <option>Newest First</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                {% for product in products %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="product-card">
+                        {% if product.badge %}
+                        <span class="product-badge">{{ product.badge }}</span>
+                        {% endif %}
+                        <img src="{{ product.image }}" class="product-image" alt="{{ product.name }}">
+                        <div class="product-info">
+                            <h5 class="product-title">{{ product.name }}</h5>
+                            <div class="product-rating">
+                                {% for i in range(5) %}
+                                    {% if i < product.rating|int %}
+                                        <i class="fas fa-star"></i>
+                                    {% elif product.rating - i > 0 %}
+                                        <i class="fas fa-star-half-alt"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span>({{ product.reviews }})</span>
+                            </div>
+                            <div class="product-price">
+                                <span class="current-price">${{ "%.2f"|format(product.price) }}</span>
+                                <span class="original-price">${{ "%.2f"|format(product.original_price) }}</span>
+                            </div>
+                            <button class="btn btn-primary add-to-cart w-100" data-product-id="{{ product.id }}">
+                                <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5>TechStore</h5>
+                    <p>Your premier destination for cutting-edge electronics and tech accessories.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/products">Products</a></li>
+                        <li><a href="/cart">Cart</a></li>
+                        <li><a href="#">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-4 mb-4">
+                    <h5>Categories</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Electronics</a></li>
+                        <li><a href="#">Computers</a></li>
+                        <li><a href="#">Audio</a></li>
+                        <li><a href="#">Gaming</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-4 mb-4">
+                    <h5>Contact Info</h5>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt me-2"></i> 123 Tech Street, NY</li>
+                        <li><i class="fas fa-phone me-2"></i> +1 234 567 890</li>
+                        <li><i class="fas fa-envelope me-2"></i> support@techstore.com</li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p>&copy; 2024 TechStore. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Update cart badge on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCartBadge();
+    });
+
+    // Function to update cart badge
+    function updateCartBadge() {
+        const savedCount = localStorage.getItem('cartCount') || '0';
+        document.querySelector('.cart-badge').textContent = savedCount;
+    }
+
+    // Add to cart functionality
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            const cartBadge = document.querySelector('.cart-badge');
+            const button = this;
+            
+            // Disable button temporarily
+            button.disabled = true;
+            const originalText = button.innerHTML;
+            
+            // Send AJAX request to add to cart
+            fetch(`/add_to_cart/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update cart badge
+                    cartBadge.textContent = data.cart_count;
+                    
+                    // Save to localStorage as backup
+                    localStorage.setItem('cartCount', data.cart_count);
+                    
+                    // Show success animation
+                    button.innerHTML = '<i class="fas fa-check me-2"></i>Added!';
+                    button.classList.remove('btn-primary');
+                    button.classList.add('btn-success');
+                    
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                        button.classList.remove('btn-success');
+                        button.classList.add('btn-primary');
+                        button.disabled = false;
+                    }, 1500);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Fallback to localStorage if server fails
+                const currentCount = parseInt(cartBadge.textContent) || 0;
+                const newCount = currentCount + 1;
+                cartBadge.textContent = newCount;
+                localStorage.setItem('cartCount', newCount);
+                
+                button.innerHTML = '<i class="fas fa-check me-2"></i>Added!';
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }, 1500);
+            });
+        });
+    });
+</script>
+</body>
+</html>

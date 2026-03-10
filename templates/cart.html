@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - TechStore</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-store me-2"></i>TechStore
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/products">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-badge">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Shopping Cart</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active">Cart</li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Cart Content -->
+    <section class="cart-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="cart-items">
+                        {% if cart_items %}
+                            <!-- Cart Items List -->
+                            <div class="cart-items-list">
+                                {% for item in cart_items %}
+                                <div class="cart-item" data-product-id="{{ item.id }}">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-3">
+                                            <img src="{{ item.image }}" class="cart-item-image" alt="{{ item.name }}">
+                                        </div>
+                                        <div class="col-md-5">
+                                            <h5 class="cart-item-title">{{ item.name }}</h5>
+                                            <div class="cart-item-price">${{ "%.2f"|format(item.price) }}</div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="quantity-controls">
+                                                <button class="btn btn-sm btn-outline-secondary quantity-btn" data-action="decrease">-</button>
+                                                <span class="quantity">{{ item.quantity }}</span>
+                                                <button class="btn btn-sm btn-outline-secondary quantity-btn" data-action="increase">+</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 text-end">
+                                            <div class="cart-item-total">${{ "%.2f"|format(item.price * item.quantity) }}</div>
+                                            <button class="btn btn-sm btn-danger remove-item mt-2">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <!-- Empty Cart Message -->
+                            <div class="empty-cart text-center py-5">
+                                <i class="fas fa-shopping-cart fa-4x mb-3"></i>
+                                <h3>Your cart is empty</h3>
+                                <p>Looks like you haven't added any items to your cart yet.</p>
+                                <a href="/products" class="btn btn-primary btn-lg mt-3">Continue Shopping</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="cart-summary">
+                        <h5>Order Summary</h5>
+                        <div class="summary-item">
+                            <span>Subtotal</span>
+                            <span class="subtotal">${{ "%.2f"|format(total) }}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Shipping</span>
+                            <span>Free</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Tax</span>
+                            <span class="tax">${{ "%.2f"|format(total * 0.1) }}</span>
+                        </div>
+                        <hr>
+                        <div class="summary-item total">
+                            <span>Total</span>
+                            <span class="grand-total">${{ "%.2f"|format(total * 1.1) }}</span>
+                        </div>
+                        <button class="btn btn-primary w-100 mt-3 checkout-btn" {% if not cart_items %}disabled{% endif %}>
+                            Proceed to Checkout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5>TechStore</h5>
+                    <p>Your premier destination for cutting-edge electronics and tech accessories.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/products">Products</a></li>
+                        <li><a href="/cart">Cart</a></li>
+                        <li><a href="#">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-4 mb-4">
+                    <h5>Categories</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Electronics</a></li>
+                        <li><a href="#">Computers</a></li>
+                        <li><a href="#">Audio</a></li>
+                        <li><a href="#">Gaming</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-4 mb-4">
+                    <h5>Contact Info</h5>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt me-2"></i> 123 Tech Street, NY</li>
+                        <li><i class="fas fa-phone me-2"></i> +1 234 567 890</li>
+                        <li><i class="fas fa-envelope me-2"></i> support@techstore.com</li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p>&copy; 2024 TechStore. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Update cart badge on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartBadge();
+            
+            // Initialize quantity controls if items exist
+            initializeQuantityControls();
+        });
+
+        // Function to update cart badge
+        function updateCartBadge() {
+            const savedCount = localStorage.getItem('cartCount') || '0';
+            document.querySelector('.cart-badge').textContent = savedCount;
+        }
+
+        // Initialize quantity controls
+        function initializeQuantityControls() {
+            document.querySelectorAll('.quantity-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const action = this.dataset.action;
+                    const cartItem = this.closest('.cart-item');
+                    const productId = cartItem.dataset.productId;
+                    const quantitySpan = cartItem.querySelector('.quantity');
+                    let quantity = parseInt(quantitySpan.textContent);
+                    
+                    if (action === 'increase') {
+                        quantity++;
+                    } else if (action === 'decrease' && quantity > 1) {
+                        quantity--;
+                    } else if (action === 'decrease' && quantity === 1) {
+                        // Remove item if quantity becomes 0
+                        removeCartItem(productId, cartItem);
+                        return;
+                    }
+                    
+                    // Update quantity display
+                    quantitySpan.textContent = quantity;
+                    
+                    // Update cart via API
+                    updateCart(productId, action);
+                });
+            });
+
+            // Remove item buttons
+            document.querySelectorAll('.remove-item').forEach(button => {
+                button.addEventListener('click', function() {
+                    const cartItem = this.closest('.cart-item');
+                    const productId = cartItem.dataset.productId;
+                    removeCartItem(productId, cartItem);
+                });
+            });
+        }
+
+        // Update cart function
+        function updateCart(productId, action) {
+            fetch('/update_cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    product_id: parseInt(productId),
+                    action: action
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update cart badge
+                    document.querySelector('.cart-badge').textContent = data.cart_count;
+                    localStorage.setItem('cartCount', data.cart_count);
+                    
+                    // Reload page to reflect changes
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                location.reload();
+            });
+        }
+
+        // Remove cart item function
+        function removeCartItem(productId, cartItem) {
+            fetch('/update_cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    product_id: parseInt(productId),
+                    action: 'remove'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove item from DOM
+                    cartItem.remove();
+                    
+                    // Update cart badge
+                    document.querySelector('.cart-badge').textContent = data.cart_count;
+                    localStorage.setItem('cartCount', data.cart_count);
+                    
+                    // Check if cart is empty
+                    if (document.querySelectorAll('.cart-item').length === 0) {
+                        location.reload();
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                location.reload();
+            });
+        }
+
+        // Checkout button
+        document.querySelector('.checkout-btn')?.addEventListener('click', function() {
+            alert('Thank you for shopping! This is a demo checkout.');
+        });
+    </script>
+</body>
+</html>
